@@ -1,0 +1,208 @@
+P="""
+from bprg import *
+
+BG,PAL=[(0,)*3,(0,150,150),(255,182,46)],1
+bg,white=BG[PAL],(255,)*3
+CLR,c=[(80,0,255),white,(0,220,0),(255,0,0),(255,140,20),(255,255,0)],[]
+
+for i in range(6):
+  for j in range(16):c.append(CLR[i])
+
+c_solved,t,VIT,scr,chrono=c[:],14,0.008,False,0
+
+def k(k):
+  if keyS(k):return True
+
+def SVIT(txt):
+  global VIT
+  V,VIT=VIT,0
+  exec(txt)
+  VIT=V
+
+def Mv(R,s,V=1):
+  global c
+  if not s:V=-1
+  R2,c2=R[V:]+R[:V],c[:]
+  for i in R:c[i]=c2[R2[R.index(i)]]
+
+class Cube:
+  def face(C,x,y):
+    for i in range(16):rect(x+(i%4)*t,y+(i//4)*t,t,t,C[i])
+  def tranch(C,x,y,o):
+    for i in range(4):rect(x,y+i*t,t,t,C[i]) if o else rect(x+i*t,y,t,t,C[-i-1])
+  def aff(x=160-t*6,y=111-t*2):
+    for (C,X,Y) in ([c[0:16],x,y],[c[16:32],x+t*4,y],[c[32:48],x+t*8,y],[c[48:64],x+t*4,y-t*4],[c[64:80],x+t*4,y+t*4]):Cube.face(C,X,Y)
+    for (C,X,Y,O) in [(c[80:84],x+t*4,y-t*5-t//2,0),(c[92:96],x+t*4,y+t*8+t//2,0),([c[83],c[87],c[91],c[95]],x-t-t//2,y,1),([c[80],c[84],c[88],c[92]],x+t*12+t//2,y,1)]:Cube.tranch(C,X,Y,O)
+    Cube.face(c[80:96],x+t*9,y+t*5)
+
+class Rt:
+  def ACT():sleep(VIT),Cube.aff()
+  def L(s):
+    for i in range(4):
+      if i in (0,1,3):exec("Mv([0,4,8,12,13,14,15,11,7,3,2,1],{})".format(not s))
+      if i==2:exec("Mv([5,9,10,6],{})".format(not s))
+      exec("Mv([16,60,56,52,48,83,87,91,95,76,72,68,64,28,24,20],{})".format(not s)),Rt.ACT()
+  def R(s):
+    for i in range(4):
+      if i in (0,1,3):exec("Mv([32,33,34,35,39,43,47,46,45,44,40,36],{})".format(s))
+      if i==2:exec("Mv([37,38,42,41],{})".format(s))
+      exec("Mv([19,63,59,55,51,80,84,88,92,79,75,71,67,31,27,23],{})".format(s)),Rt.ACT()
+  def U(s):
+    for i in range(4):
+      if i in (0,1,3):exec("Mv([48,49,50,51,55,59,63,62,61,60,56,52],{})".format(s))
+      if i==2:exec("Mv([53,54,58,57],{})".format(s))
+      exec("Mv([16,3,2,1,0,83,82,81,80,35,34,33,32,19,18,17],{})".format(s)),Rt.ACT()
+  def D(s):
+    for i in range(4):
+      if i in (0,1,3):exec("Mv([64,65,66,67,71,75,79,78,77,76,72,68],{})".format(s))
+      if i==2:exec("Mv([69,70,74,73],{})".format(s))
+      exec("Mv([28,29,30,31,44,45,46,47,92,93,94,95,12,13,14,15],{})".format(s)),Rt.ACT()
+  def F(s):
+    for i in range(4):
+      if i in (0,1,3):exec("Mv([16,17,18,19,23,27,31,30,29,28,24,20],{})".format(s))
+      if i==2:exec("Mv([21,22,26,25],{})".format(s))
+      exec("Mv([3,60,61,62,63,32,36,40,44,67,66,65,64,15,11,7],{})".format(s)),Rt.ACT()
+  def B(s):
+    for i in range(4):
+      if i in (0,1,3):exec("Mv([80,81,82,83,87,91,95,94,93,92,88,84],{})".format(s))
+      if i==2:exec("Mv([85,86,90,89],{})".format(s))
+      exec("Mv([0,4,8,12,76,77,78,79,47,43,39,35,51,50,49,48],{})".format(s)),Rt.ACT()
+  def l(s):
+    for i in range(4):
+      exec("Mv([17,61,57,53,49,82,86,90,94,77,73,69,65,29,25,21],{})".format(s)),Rt.ACT()
+  def r(s):
+    for i in range(4):
+      exec("Mv([18,62,58,54,50,81,85,89,93,78,74,70,66,30,26,22],{})".format(s)),Rt.ACT()
+  def u(s):
+    for i in range(4):
+      exec("Mv([20,21,22,23,36,37,38,39,84,85,86,87,4,5,6,7],{})".format(s)),Rt.ACT()
+  def d(s):
+    for i in range(4):
+      exec("Mv([24,25,26,27,40,41,42,43,88,89,90,91,8,9,10,11],{})".format(s)),Rt.ACT()
+  def f(s):
+    for i in range(4):
+      exec("Mv([56,57,58,59,33,37,41,45,71,70,69,68,14,10,6,2],{})".format(s)),Rt.ACT()
+  def b(s):
+    for i in range(4):
+      exec("Mv([52,53,54,55,34,38,42,46,75,74,73,72,13,9,5,1],{})".format(s)),Rt.ACT()
+  def X(s):SVIT("Rt.U({}),Rt.u({}),Rt.d({}),Rt.D({})".format(not s,s,s,s))
+  def Y(s):SVIT("Rt.L({}),Rt.l({}),Rt.r({}),Rt.R({})".format(not s,s,s,s))
+  def Z(s):SVIT("Rt.F({}),Rt.f({}),Rt.b({}),Rt.B({})".format(s,s,s,not s))
+  def prog(*M):
+    for i in M:exec("Rt.{}({})".format(i[0],len(i)-1))
+
+class CS:
+  def C(c):rect(2,2,18,18,c)
+  def solved():
+    for i in range(0,96):
+      if c[i]!=c[(i//16)*16]:return False
+    return True
+  def scramble():SVIT('for i in range(randint(40,68)):exec("Rt.{}({})".format(choice("LRUDFBlrudfb"),randint(0,1)))')
+  def reset():
+    global c,scr
+    c,scr=c_solved[:],False
+    MN.ACT()
+  def timer():
+    global scr,chrono
+    if key(4) and not scr:
+      if not CS.solved():
+        m=monotonic()
+        CS.C((255,0,0))
+        while key(4):
+          if monotonic()-m>0.4:
+            CS.C((0,255,0))
+            scr=True
+      chrono=monotonic()
+    T="{:.3f}".format(monotonic()-chrono)
+    if scr:
+      CS.C((180,)*3),draw(T,318-10*len(T),0,white,bg)
+      if CS.solved():
+        CS.C((0,255,0)),draw(T,318-10*len(T),0,(0,255,0),bg)
+        scr,chrono=False,0
+
+class SEED:
+  def hash():print("".join(str(CLR.index(i)) for i in c)),draw("hash printed",7,198,white,bg),sleep(0.8),MN.ACT()
+  def read():
+    global c
+    sleep(0.1)
+    c=[CLR[int(i)] for i in input("hash: ")]
+    MN.ACT()
+
+class MN:
+  def ACT():background(bg),Cube.aff()
+  def BG():
+    global PAL,bg
+    PAL=passlimits(PAL+1,0,len(BG)-1);bg=BG[PAL]
+    MN.ACT()
+  def infos():
+    draw("[.]:change BG       [ANS:quit]",10,199,white,bg),draw("<"+" "*29+">",5,101,white,bg),draw("Made by Jell    4×4    V1 1.03",10,6,white,bg)
+    for y in (32,190):rect(0,y,320,1,white)
+  def s_1():
+    M,M2=["L'","U","F'","F","U'","R","L","D'","B","B'","D","R'","l'","u","f'","f","u'","r"],["l","d","b","d'","r'"]
+    for i in range(18):
+      x,y,C=20+(i%6)*48,42+(i//6)*30,white
+      if i in (0,6):C=(80,0,255)
+      if i in (5,11):C=(255,0,0)
+      rect(x,y,40,20,C),draw(M[i],x+17-2*len(M[i]),y+1,bg,C)
+    for i in range(5):
+      x,y=20+(i%6)*57.5,133+(i//5)*30
+      rect(x,y,50,20,white),draw(M2[i],x+22-2*len(M2[i]),y+1,bg,C)
+    rect(135,163,50,20,white),draw("b'",155-2*len("b'"),164,bg,white)
+  def s_2():
+    M=["[L]/[R]: axe X","[U]/[D]: axe Y","[×]/[÷]: axe Z","[+]: print hash","[-]: read hash","[0]: reset","[×10^]: scramble"]
+    for i in range(len(M)):draw(M[i],20,111-len(M)*10+i*20,white,bg)
+  def s_3():
+    M=["chrono: hold [OK] until the","led become green.","","Then, solve the cube.","","It detect when you've finished"]
+    for i in range(len(M)):draw_center(M,160,111,white,bg)
+  def help(s=1):
+    background(bg),MN.infos(),MN.s_1()
+    while not k(51):
+      if keyR([0,3]):
+        s=passlimits(s+key(3)-key(0),1,3)
+        background(bg),MN.infos(),exec("MN.s_{}()".format(s)),release(0,3)
+      if k(49):MN.BG(),draw("{SPEC}",10,198,white,bg)
+    MN.ACT()
+
+MN.ACT(),draw("ANS:help",10,198,white,bg)
+
+while True:
+  CS.timer()
+  if k(12):Rt.L(1)
+  if k(18):Rt.L(0)
+  if k(17):Rt.R(0)
+  if k(23):Rt.R(1)
+  if k(13):Rt.U(0)
+  if k(16):Rt.U(1)
+  if k(22):Rt.D(0)
+  if k(19):Rt.D(1)
+  if k(15):Rt.F(0)
+  if k(14):Rt.F(1)
+  if k(20):Rt.B(0)
+  if k(21):Rt.B(1)
+  if k(24):Rt.l(0)
+  if k(30):Rt.l(1)
+  if k(29):Rt.r(0)
+  if k(34):Rt.r(1)
+  if k(28):Rt.u(0)
+  if k(25):Rt.u(1)
+  if k(33):Rt.d(0)
+  if k(31):Rt.d(1)
+  if k(27):Rt.f(0)
+  if k(26):Rt.f(1)
+  if k(38):Rt.b(0)
+  if k(32):Rt.b(1)
+  if k(3):Rt.X(0)
+  if k(0):Rt.X(1)
+  if k(1):Rt.Y(0)
+  if k(2):Rt.Y(1)
+  if k(39):Rt.Z(1)
+  if k(40):Rt.Z(0)
+  if k(48):CS.reset()
+  if k(50):CS.scramble()
+  if k(51):MN.help()
+  if k(45):SEED.hash()
+  if k(46):SEED.read()
+  if k(52):break
+"""
+print(len(P)-2)
+exec(P)
